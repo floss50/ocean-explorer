@@ -108,7 +108,11 @@ contract SimpleStakeLottery is Ownable {
         // TODO: save agreementId to avoid double spending
     }
 
-    function probablyPoorPseudoRandom(uint256 max) public view returns (uint256) {
+    function probablyPoorPseudoRandom(uint256 max)
+        public
+        view
+        returns (uint256)
+    {
         // TODO: find a better random number generator
         // generate a random integer between 0 and max
         return uint256(blockhash(block.number-1)) % max;
