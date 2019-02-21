@@ -19,6 +19,7 @@ contract SimpleStakeLottery is Ownable {
     TicketList internal ticketList;
     uint256 public random;
     address public winner;
+    mapping(bytes32 => bool) internal stakedAgreements;
 
     struct TicketList {
         mapping(address => uint256) tickets;
@@ -56,6 +57,10 @@ contract SimpleStakeLottery is Ownable {
     )
         external
     {
+        require(
+            stakedAgreements[_agreementId] == false,
+            'Agreement already staked'
+        );
         address templateId;
         bytes32[] memory conditionIds;
         ConditionStoreLibrary.ConditionState state;
@@ -105,7 +110,7 @@ contract SimpleStakeLottery is Ownable {
             ticketList.participants.push(msg.sender);
         // amount of lottery tickets generated ~ time staked
         ticketList.tickets[msg.sender] += _stakeAmount * timeLock;
-        // TODO: save agreementId to avoid double spending
+        stakedAgreements[_agreementId] = true;
     }
 
     function probablyPoorPseudoRandom(uint256 max)
