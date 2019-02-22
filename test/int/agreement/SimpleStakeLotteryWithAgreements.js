@@ -8,33 +8,52 @@ const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 
 const SimpleStakeLottery = artifacts.require('SimpleStakeLottery')
-const LockRewardCondition = artifacts.require('LockRewardCondition')
-const SignCondition = artifacts.require('SignCondition')
-const EscrowReward = artifacts.require('EscrowReward')
 
 const constants = require('../../helpers/constants.js')
+const deployConditions = require('../../helpers/deployConditions.js')
 const deployManagers = require('../../helpers/deployManagers.js')
 const getBalance = require('../../helpers/getBalance.js')
 const testUtils = require('../../helpers/utils.js')
 
 contract('Lottery', (accounts) => {
-    let signCondition,
+    let oceanToken,
+        didRegistry,
+        agreementStoreManager,
+        conditionStoreManager,
+        templateStoreManager,
+        signCondition,
         lockRewardCondition,
-        escrowReward
+        escrowReward,
+        lottery
 
     async function setupTest({
         deployer = accounts[8],
         owner = accounts[9]
     } = {}) {
-        const {
+        ({
             oceanToken,
             didRegistry,
             agreementStoreManager,
             conditionStoreManager,
             templateStoreManager
-        } = await deployManagers(deployer, owner)
+        } = await deployManagers(
+            deployer,
+            owner
+        ));
 
-        const lottery = await SimpleStakeLottery.new({ from: deployer })
+        ({
+            signCondition,
+            lockRewardCondition,
+            escrowReward
+        } = await deployConditions(
+            deployer,
+            owner,
+            agreementStoreManager,
+            conditionStoreManager,
+            oceanToken
+        ))
+
+        lottery = await SimpleStakeLottery.new({ from: deployer })
         await lottery.methods['initialize(address,address,address,address)'](
             owner,
             conditionStoreManager.address,
@@ -44,39 +63,10 @@ contract('Lottery', (accounts) => {
         )
 
         await oceanToken.addMinter(lottery.address, { from: owner })
-        lockRewardCondition = await LockRewardCondition.new({ from: deployer })
-        await lockRewardCondition.initialize(
-            owner,
-            conditionStoreManager.address,
-            oceanToken.address,
-            { from: deployer }
-        )
-
-        escrowReward = await EscrowReward.new({ from: deployer })
-        await escrowReward.initialize(
-            owner,
-            conditionStoreManager.address,
-            oceanToken.address,
-            { from: deployer }
-        )
-
-        signCondition = await SignCondition.new()
-        await signCondition.initialize(
-            owner,
-            conditionStoreManager.address,
-            { from: accounts[0] }
-        )
-
         await templateStoreManager.proposeTemplate(accounts[0])
         await templateStoreManager.approveTemplate(accounts[0], { from: owner })
 
         return {
-            oceanToken,
-            didRegistry,
-            agreementStoreManager,
-            conditionStoreManager,
-            templateStoreManager,
-            lottery,
             deployer,
             owner
         }
@@ -152,14 +142,7 @@ contract('Lottery', (accounts) => {
 
     describe('buy lottery tickets', () => {
         it('correct buy should get data, agreement & conditions', async () => {
-            const {
-                oceanToken,
-                didRegistry,
-                agreementStoreManager,
-                conditionStoreManager,
-                lottery,
-                owner
-            } = await setupTest()
+            const { owner } = await setupTest()
 
             const initialBalance = 1000
             const plays = 1
@@ -218,7 +201,7 @@ contract('Lottery', (accounts) => {
                     balance: await getBalance(oceanToken, participant)
                 }
             }
-            console.log(participants)
+            // console.log(participants)
             assert.strictEqual(await getBalance(oceanToken, lottery.address), 0)
         })
     })
