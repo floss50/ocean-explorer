@@ -162,12 +162,12 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         public
         returns (bool success)
     {
-        ERC20Token _token = did2BondingCurve[_did].bondedToken;
+        ERC20Token drops = did2BondingCurve[_did].bondedToken;
         uint256 poolBalance = did2BondingCurve[_did].poolBalance;
 
         // calculate the amount bonded tokens to be minted:
         uint256 tokensToMint = calculatePurchaseReturn(
-            _token.totalSupply().div(scale),
+            drops.totalSupply().div(scale),
             poolBalance.div(scale),
             reserveRatio,
             _buyAmount.div(scale)
@@ -176,21 +176,21 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         // transfer Ocean tokens into contract for purchase
         require(
             oceanToken.transferFrom(
-                msg.sender,
+                tx.origin,
                 address(this),
                 _buyAmount)
         );
-        did2BondingCurve[_did].balances[msg.sender] = did2BondingCurve[_did]
-            .balances[msg.sender]
+        did2BondingCurve[_did].balances[tx.origin] = did2BondingCurve[_did]
+            .balances[tx.origin]
             .add(_buyAmount);
         did2BondingCurve[_did].poolBalance = did2BondingCurve[_did]
             .poolBalance
             .add(_buyAmount);
 
         // mint new bonded tokens
-        _token.mint(msg.sender, tokensToMint.mul(scale));
+        drops.mint(tx.origin, tokensToMint.mul(scale));
 
-        emit buyBondedTokens(msg.sender, _buyAmount, tokensToMint);
+        emit buyBondedTokens(tx.origin, _buyAmount, tokensToMint);
         return true;
     }
 
@@ -207,16 +207,16 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         public
         returns (bool success)
     {
-        ERC20Token _token = did2BondingCurve[_did].bondedToken;
+        ERC20Token drops = did2BondingCurve[_did].bondedToken;
         require(
-            _sellAmount > 0 && _token.balanceOf(msg.sender) >= _sellAmount,
+            _sellAmount > 0 && drops.balanceOf(tx.origin) >= _sellAmount,
             'sender has not enough balance.'
         );
 
         // calculate amount of Ocean tokens to withdraw
         uint256 poolBalance = did2BondingCurve[_did].poolBalance;
         uint256 amountOcean = calculateSaleReturn(
-            _token.totalSupply().div(scale),
+            drops.totalSupply().div(scale),
             poolBalance.div(scale),
             reserveRatio,
             _sellAmount.div(scale)
@@ -228,18 +228,18 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         );
 
         // burn bonded tokens
-        _token.burnFrom(msg.sender, _sellAmount);
+        drops.burnFrom(tx.origin, _sellAmount);
 
         // release Ocean tokens
-        require(oceanToken.transfer(msg.sender, amountOcean));
-        did2BondingCurve[_did].balances[msg.sender] = did2BondingCurve[_did]
-            .balances[msg.sender]
+        require(oceanToken.transfer(tx.origin, amountOcean));
+        did2BondingCurve[_did].balances[tx.origin] = did2BondingCurve[_did]
+            .balances[tx.origin]
             .sub(amountOcean);
         did2BondingCurve[_did].poolBalance = did2BondingCurve[_did]
             .poolBalance
             .sub(amountOcean);
 
-        emit sellBondedTokens(msg.sender, amountOcean, _sellAmount);
+        emit sellBondedTokens(tx.origin, amountOcean, _sellAmount);
         return true;
     }
 
