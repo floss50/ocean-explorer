@@ -30,8 +30,6 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         // total amount of Ocean tokens deposited to purchase bonded tokens
         uint256 poolBalance;
         ERC20Token bondedToken;
-        // num of ocean tokens for each token holder
-        mapping(address => uint256) balances;
     }
     // lookup table from DID to corresponding bondingCurve struct
     mapping(bytes32 => bondingCurve) did2BondingCurve;
@@ -87,7 +85,7 @@ contract OceanBondingCurve is BancorFormula, Ownable {
         oceanToken = OceanToken(_tokenAddress);
         // initialize variables
         scale = 1;
-        reserveRatio = 900000;
+        reserveRatio = 700000;
         // MAX_WEIGHT = 1000000;
         gasPrice = 0 wei;
     }
@@ -180,9 +178,6 @@ contract OceanBondingCurve is BancorFormula, Ownable {
                 address(this),
                 _buyAmount)
         );
-        did2BondingCurve[_did].balances[tx.origin] = did2BondingCurve[_did]
-            .balances[tx.origin]
-            .add(_buyAmount);
         did2BondingCurve[_did].poolBalance = did2BondingCurve[_did]
             .poolBalance
             .add(_buyAmount);
@@ -232,9 +227,6 @@ contract OceanBondingCurve is BancorFormula, Ownable {
 
         // release Ocean tokens
         require(oceanToken.transfer(tx.origin, amountOcean));
-        did2BondingCurve[_did].balances[tx.origin] = did2BondingCurve[_did]
-            .balances[tx.origin]
-            .sub(amountOcean);
         did2BondingCurve[_did].poolBalance = did2BondingCurve[_did]
             .poolBalance
             .sub(amountOcean);

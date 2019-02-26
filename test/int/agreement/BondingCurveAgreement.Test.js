@@ -199,5 +199,82 @@ contract('Escrow Access Secret Store integration test', (accounts) => {
             console.log('ocean token balance :=', oceanBalance / scale)
             console.log(`alice sells bonded tokens at effective price of ${sellAmount / bondingAmount} Ocean token per bonded token`)
         })
+
+        it('should create bonding curve agreement, multi-bond and withdraw', async () => {
+            const { owner } = await setupTest()
+
+            // prepare: bonding curve agreement
+            const { agreementId, agreement, sender, receiver, bondingAmount, timeLockBond, checksum, url } =
+                await prepareBondingCurveAgreement({ timeLockBond: 20 })
+
+            // register DID
+            await didRegistry.registerAttribute(agreement.did, checksum, url, { from: receiver })
+
+            // create agreement
+            await bondingAccessSecretStoreTemplate.createAgreement(agreementId, ...Object.values(agreement))
+            const tokenAddress = await oceanBondingCurve.getTokenAddress(agreement.did)
+            const didToken = await ERC20Token.at(tokenAddress)
+
+            const seedAmount = bondingAmount
+            // receiver: fill up wallet
+            await oceanToken.mint(receiver, seedAmount, { from: owner })
+            // receiver: put some bonded tokens in there
+            await oceanToken.approve(oceanBondingCurve.address, seedAmount, { from: receiver })
+
+            console.log('receiver buys for ', seedAmount)
+            await oceanBondingCurve.buy(agreement.did, seedAmount, { from: receiver })
+            console.log('OCEAN curve := ', await getBalance(oceanToken, oceanBondingCurve.address))
+            console.log('OCEAN sender := ', await getBalance(oceanToken, sender))
+            console.log('OCEAN receiver := ', await getBalance(oceanToken, receiver))
+            console.log('DROPS curve := ', (await didToken.totalSupply()).toNumber())
+            console.log('DROPS sender := ', (await oceanBondingCurve.getTokenBalance(agreement.did, sender)).toNumber())
+            console.log('DROPS receiver := ', (await oceanBondingCurve.getTokenBalance(agreement.did, receiver)).toNumber())
+
+            // sender: fill up wallet
+            await oceanToken.mint(sender, bondingAmount, { from: owner })
+            // fulfill lock bonding
+            await oceanToken.approve(oceanBondingCurve.address, bondingAmount, { from: sender })
+
+            console.log('sender buys for ', bondingAmount)
+            await lockBondingCondition.fulfill(agreementId, agreement.did, bondingAmount, { from: sender })
+            console.log('OCEAN curve := ', await getBalance(oceanToken, oceanBondingCurve.address))
+            console.log('OCEAN sender := ', await getBalance(oceanToken, sender))
+            console.log('OCEAN receiver := ', await getBalance(oceanToken, receiver))
+            console.log('DROPS curve := ', (await didToken.totalSupply()).toNumber())
+            console.log('DROPS sender := ', (await oceanBondingCurve.getTokenBalance(agreement.did, sender)).toNumber())
+            console.log('DROPS receiver := ', (await oceanBondingCurve.getTokenBalance(agreement.did, receiver)).toNumber())
+
+            // fulfill access
+            await accessSecretStoreCondition.fulfill(agreementId, agreement.did, sender, { from: receiver })
+
+            // sell bonds
+            let senderBalance = (await oceanBondingCurve.getTokenBalance(agreement.did, sender)).toNumber()
+            let receiverBalance = (await oceanBondingCurve.getTokenBalance(agreement.did, receiver)).toNumber()
+            await didToken.approve(oceanBondingCurve.address, receiverBalance, { from: receiver })
+            await didToken.approve(oceanBondingCurve.address, senderBalance, { from: sender })
+            await assert.isRejected(
+                releaseBondingCondition.fulfill(agreementId, agreement.did, senderBalance, { from: sender }),
+                constants.condition.epoch.error.isTimeLocked
+            )
+
+            console.log('receiver sells for ', receiverBalance)
+            await oceanBondingCurve.sell(agreement.did, receiverBalance, { from: receiver })
+            console.log('OCEAN curve := ', await getBalance(oceanToken, oceanBondingCurve.address))
+            console.log('OCEAN sender := ', await getBalance(oceanToken, sender))
+            console.log('OCEAN receiver := ', await getBalance(oceanToken, receiver))
+            console.log('DROPS curve := ', (await didToken.totalSupply()).toNumber())
+            console.log('DROPS sender := ', (await oceanBondingCurve.getTokenBalance(agreement.did, sender)).toNumber())
+            console.log('DROPS receiver := ', (await oceanBondingCurve.getTokenBalance(agreement.did, receiver)).toNumber())
+
+            await increaseTime(timeLockBond)
+            console.log('sender sells for ', senderBalance)
+            await releaseBondingCondition.fulfill(agreementId, agreement.did, senderBalance, { from: sender })
+            console.log('OCEAN curve := ', await getBalance(oceanToken, oceanBondingCurve.address))
+            console.log('OCEAN sender := ', await getBalance(oceanToken, sender))
+            console.log('OCEAN receiver := ', await getBalance(oceanToken, receiver))
+            console.log('DROPS curve := ', (await didToken.totalSupply()).toNumber())
+            console.log('DROPS sender := ', (await oceanBondingCurve.getTokenBalance(agreement.did, sender)).toNumber())
+            console.log('DROPS receiver := ', (await oceanBondingCurve.getTokenBalance(agreement.did, receiver)).toNumber())
+        })
     })
 })
