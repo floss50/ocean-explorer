@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Button from '../../components/atoms/Button'
 
 class TemplateItem extends Component {
     state = {
@@ -21,15 +22,27 @@ class TemplateItem extends Component {
         })
     }
 
+    approveTemplate = () => {
+        const { templateId, drizzle, drizzleState } = this.props
+        const templateStoreManager = drizzle.contracts.TemplateStoreManager
+        const stackId = templateStoreManager.methods['approveTemplate'].cacheSend(
+            templateId,
+            { from: drizzleState.accounts[0] }
+        )
+        this.setState({
+            stackId
+        })
+    }
+
     render() {
-        // get the contract state from drizzleState
         const { TemplateStoreManager } = this.props.drizzleState.contracts
-        // using the saved `dataKey`, get the variable we're interested in
         const template = TemplateStoreManager.getTemplate[this.state.getTemplateKey]
 
         return (
             <div>
-                <div>{this.props.templateId} - State: {template && template.value.state}</div>
+                <div>{this.props.templateId}</div>
+                <div>State: {template && template.value.state}</div>
+                <Button onClick={this.approveTemplate}>Approve</Button>
             </div>
         )
     }

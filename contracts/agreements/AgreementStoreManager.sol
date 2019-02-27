@@ -135,7 +135,7 @@ contract AgreementStoreManager is Ownable {
      * @return the agreement attributes.
      */
     function getAgreement(bytes32 _id)
-        external
+        public
         view
         returns (
             bytes32 did,
@@ -160,7 +160,7 @@ contract AgreementStoreManager is Ownable {
      * @return the DID owner associated with agreement.did from the DID registry.
      */
     function getAgreementDIDOwner(bytes32 _id)
-        external
+        public
         view
         returns (address didOwner)
     {
@@ -201,5 +201,16 @@ contract AgreementStoreManager is Ownable {
         returns (bytes32[] memory)
     {
         return agreementList.templateIdToAgreementIds[_templateId];
+    }
+
+    /**
+     * @return the agreement IDs
+     */
+    function getAgreementIds()
+        public
+        view
+        returns (bytes32[] memory)
+    {
+        return agreementList.agreementIds;
     }
 }

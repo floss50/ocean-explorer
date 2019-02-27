@@ -150,15 +150,23 @@ contract ConditionStoreManager is Ownable, Common {
     }
 
     function getConditionListSize()
-        external
+        public
         view
         returns (uint size)
     {
         return conditionList.conditionIds.length;
     }
 
+    function getConditionIds()
+        public
+        view
+        returns (bytes32[] memory)
+    {
+        return conditionList.conditionIds;
+    }
+
     function getCondition(bytes32 _id)
-        external
+        public
         view
         returns (
             address typeRef,
@@ -180,7 +188,7 @@ contract ConditionStoreManager is Ownable, Common {
     }
 
     function getConditionState(bytes32 _id)
-        external
+        public
         view
         returns (ConditionStoreLibrary.ConditionState)
     {

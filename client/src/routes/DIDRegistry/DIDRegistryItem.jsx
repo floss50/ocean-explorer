@@ -13,9 +13,9 @@ class DIDRegistryItem extends Component {
     getAttributes = () => {
         const { did, drizzle } = this.props
         if (!did) { return null }
-        const contract = drizzle.contracts.DIDRegistry
+        const didRegistry = drizzle.contracts.DIDRegistry
 
-        const getBlockNumberUpdatedKey = contract.methods['getBlockNumberUpdated'].cacheCall(did)
+        const getBlockNumberUpdatedKey = didRegistry.methods['getBlockNumberUpdated'].cacheCall(did)
         this.setState({
             getBlockNumberUpdatedKey
         })

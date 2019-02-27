@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import DIDRegistryList from './routes/DIDRegistry/DIDRegistryList.jsx'
 import AgreementList from './routes/Agreements/AgreementList.jsx'
+import ConditionList from './routes/Conditions/ConditionList.jsx'
 import TemplateList from './routes/Templates/TemplateList.jsx'
 import './App.css'
 
@@ -16,11 +17,15 @@ class DrizzleApp extends Component {
                     drizzle={this.props.drizzle}
                     drizzleState={this.props.drizzleState}
                 />
+                <TemplateList
+                    drizzle={this.props.drizzle}
+                    drizzleState={this.props.drizzleState}
+                />
                 <AgreementList
                     drizzle={this.props.drizzle}
                     drizzleState={this.props.drizzleState}
                 />
-                <TemplateList
+                <ConditionList
                     drizzle={this.props.drizzle}
                     drizzleState={this.props.drizzleState}
                 />

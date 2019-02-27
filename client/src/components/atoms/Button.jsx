@@ -2,17 +2,8 @@ import React, { PureComponent } from 'react'
 import cx from 'classnames'
 import styles from './Button.module.scss'
 
-interface ButtonProps {
-    children: string
-    className?: string
-    primary?: boolean
-    link?: boolean
-    href?: string
-    onClick?: any
-}
-
-export default class Button extends PureComponent<ButtonProps, any> {
-    public render() {
+export default class Button extends PureComponent{
+    render() {
         let classes
         const {
             primary,

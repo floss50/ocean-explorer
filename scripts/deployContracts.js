@@ -25,6 +25,7 @@ process.chdir('../')
 const walletPath = './wallets.json'
 // load NETWORK from environment
 const NETWORK = process.env.NETWORK || 'development'
+const TEMPLATE_OWNER = process.env.TEMPLATE_ID || null
 // load current version from package
 const VERSION = `v${pkg.version}`
 const timeout = 36000
@@ -194,7 +195,7 @@ async function deploy(contracts, roles) {
     }
 
     if (contracts.indexOf('TemplateStoreManager') > -1) {
-        templateStoreManagerAddress = execSync(`npx zos create TemplateStoreManager --init initialize --args ${roles.owner} -v`).toString().trim()
+        templateStoreManagerAddress = execSync(`npx zos create TemplateStoreManager --init initialize --args ${TEMPLATE_OWNER} -v`).toString().trim()
     }
 
     if (conditionStoreManagerAddress) {

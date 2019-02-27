@@ -1,30 +1,18 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Input from '../../components/atoms/Form/Input'
 import TemplateItem from './TemplateItem'
 import styles from './Template.module.scss'
+import DrizzleComponent from '../../components/molecules/DrizzleComponent'
 
-class TemplateList extends Component {
+class TemplateList extends DrizzleComponent {
     state = {
         stackId: null,
         getTemplateIdsKey: null,
         getTemplateListSizeKey: null,
-        value: '0x0000000000000000000000000000000000000000000000000000000000000001'
+        templateIdValue: this.props.drizzleState.accounts[0]
     }
 
     componentDidMount() {
-        const { drizzle, drizzleState } = this.props
-        const templateStoreManager = drizzle.contracts.TemplateStoreManager
-
-        // const templateId = drizzleState.accounts[0]
-        // const stackId = templateStoreManager.methods['proposeTemplate'].cacheSend(
-        //     templateId,
-        //     { from: drizzleState.accounts[0] }
-        // )
-        // this.setState({
-        //     stackId
-        // })
-        // await templateStoreManager.approveTemplate(templateId, { from: owner })
-
         this.getTemplates()
     }
 
@@ -41,16 +29,45 @@ class TemplateList extends Component {
         })
     }
 
+    handleChange = event => {
+        this.setState({ templateIdValue: event.target.value })
+    }
+
+    handleKeyDown = e => {
+        if (e.keyCode === 13) {
+            this.proposeTemplate(e.target.value)
+        }
+    }
+
+    proposeTemplate = templateId => {
+        const { drizzle, drizzleState } = this.props
+        const templateStoreManager = drizzle.contracts.TemplateStoreManager
+        const stackId = templateStoreManager.methods['proposeTemplate'].cacheSend(
+            templateId,
+            { from: drizzleState.accounts[0] }
+        )
+        this.setState({
+            stackId
+        })
+    }
+
     render() {
-        // get the contract state from drizzleState
         const { TemplateStoreManager } = this.props.drizzleState.contracts
-        // using the saved `dataKey`, get the variable we're interested in
-        // const didRegisterIds = TemplateStoreManager.getDIDRegisterIds[this.state.getDIDRegisterIdsKey]
         const templateListSize = TemplateStoreManager.getTemplateListSize[this.state.getTemplateListSizeKey]
         const templateIds = TemplateStoreManager.getTemplateIds[this.state.getTemplateIdsKey]
 
         return (
             <div className={styles.wrapper}>
+                <div className={styles.itemForm}>
+                    <Input
+                        label="Template"
+                        name="template"
+                        type="text"
+                        value={this.state.templateIdValue}
+                        onChange={this.handleChange}
+                        onKeyDown={this.handleKeyDown} />
+                    <div>{this.getTxStatus()}</div>
+                </div>
                 <p>TemplateList Size: {templateListSize && templateListSize.value}</p>
                 {
                     templateIds && templateIds.value && templateIds.value.map(templateId => (
