@@ -1,4 +1,4 @@
-@import '../styles/variables';
+@import '../../styles/variables';
 
 .itemForm {
     margin-top: $spacer / 2;
@@ -7,6 +7,12 @@
     button {
         margin-top: -($spacer * 2);
     }
+}
+
+.wrapper {
+    border: 1px solid $brand-grey-lighter;
+    padding: 2em;
+    margin: 1em;
 }
 
 .error {

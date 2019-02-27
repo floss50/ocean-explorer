@@ -32,28 +32,28 @@ contract TemplateStoreManager is Ownable {
     }
 
     function proposeTemplate(address _id)
-        external
+        public
         returns (uint size)
     {
         return templateList.propose(_id);
     }
 
     function approveTemplate(address _id)
-        external
+        public
         onlyOwner
     {
         return templateList.approve(_id);
     }
 
     function revokeTemplate(address _id)
-        external
+        public
         onlyOwnerOrTemplateOwner(_id)
     {
         return templateList.revoke(_id);
     }
 
     function getTemplate(address _id)
-        external
+        public
         view
         returns (
             TemplateStoreLibrary.TemplateState state,
@@ -68,11 +68,15 @@ contract TemplateStoreManager is Ownable {
         blockNumberUpdated = templateList.templates[_id].blockNumberUpdated;
     }
 
-    function getTemplateListSize() external view returns (uint size) {
+    function getTemplateListSize() public view returns (uint size) {
         return templateList.templateIds.length;
     }
 
-    function isTemplateApproved(address _id) external view returns (bool) {
+    function getTemplateIds() public view returns (address[] memory) {
+        return templateList.templateIds;
+    }
+
+    function isTemplateApproved(address _id) public view returns (bool) {
         return templateList.templates[_id].state ==
             TemplateStoreLibrary.TemplateState.Approved;
     }

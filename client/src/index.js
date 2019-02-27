@@ -7,12 +7,18 @@ import { register } from './serviceWorker'
 // import drizzle functions and contract artifact
 import { Drizzle, generateStore } from 'drizzle'
 import { DrizzleContext } from 'drizzle-react'
+import AgreementStoreManager from './contracts/AgreementStoreManager.json'
+import ConditionStoreManager from './contracts/ConditionStoreManager.json'
+import TemplateStoreManager from './contracts/TemplateStoreManager.json'
 import DIDRegistry from './contracts/DIDRegistry.json'
 
 // let drizzle know what contracts we want
 const options = {
     contracts: [
-        DIDRegistry
+        DIDRegistry,
+        AgreementStoreManager,
+        ConditionStoreManager,
+        TemplateStoreManager
     ]
 }
 

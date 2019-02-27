@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import Input from '../components/atoms/Form/Input'
+import Input from '../../components/atoms/Form/Input'
 import DIDRegistryItem from './DIDRegistryItem'
-import styles from './ItemForm.module.scss'
-
+import styles from './DIDRegistry.module.scss'
 
 class DIDRegistryList extends Component {
     state = {
@@ -82,7 +81,7 @@ class DIDRegistryList extends Component {
         const didRegistrySize = DIDRegistry.getDIDRegistrySize[this.state.getDIDRegistrySizeKey]
 
         return (
-            <div>
+            <div className={styles.wrapper}>
                 <div className={styles.itemForm}>
                     <Input
                         label="DID"
