@@ -6,6 +6,7 @@ import { register } from './serviceWorker'
 
 // import drizzle functions and contract artifact
 import { Drizzle, generateStore } from 'drizzle'
+import { DrizzleContext } from 'drizzle-react'
 import DIDRegistry from './contracts/DIDRegistry.json'
 
 // let drizzle know what contracts we want
@@ -20,5 +21,9 @@ const drizzleStore = generateStore(options)
 const drizzle = new Drizzle(options, drizzleStore)
 
 // pass in the drizzle instance
-ReactDOM.render(<App drizzle={drizzle} />, document.getElementById('root'))
+ReactDOM.render(
+    <DrizzleContext.Provider drizzle={drizzle}>
+        <App />
+    </DrizzleContext.Provider>,
+    document.getElementById('root'))
 register()

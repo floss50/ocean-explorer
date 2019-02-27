@@ -1,40 +1,42 @@
-import React, { Component } from 'react'
-import DIDRegistryContainer from './DIDRegistry/DIDRegistryContainer.jsx'
-import './App.css'
+import React from 'react'
+import { DrizzleContext } from 'drizzle-react'
+import DrizzleApp from './DrizzleApp'
+import Content from './components/atoms/Content'
+import Header from './components/Header.jsx'
+import Footer from './components/Footer.jsx'
+import Spinner from './components/atoms/Spinner'
 
-class App extends Component {
-    state = { loading: true, drizzleState: null }
+import './styles/global.scss'
+import styles from './App.module.scss'
 
-    componentDidMount() {
-        const { drizzle } = this.props
+export default () => (
+    <DrizzleContext.Consumer>
+        {drizzleContext => {
+            const { drizzle, drizzleState, initialized } = drizzleContext
+            return (
+                <div className={styles.app}>
 
-        // subscribe to changes in the store
-        this.unsubscribe = drizzle.store.subscribe(() => {
-            // every time the store updates, grab the state from drizzle
-            const drizzleState = drizzle.store.getState()
+                    <Header />
 
-            // check to see if it's ready, if so, update local component state
-            if (drizzleState.drizzleStatus.initialized) {
-                this.setState({ loading: false, drizzleState })
-            }
-        })
-    }
+                    <main className={styles.main}>
+                        { !initialized ? (
+                            <div className={styles.loader}>
+                                <Spinner message="Connecting to Ocean..." />
+                            </div>
+                        ) : (
+                            <div className={styles.home}>
+                                <Content>
+                                    <DrizzleApp
+                                        drizzle={drizzle}
+                                        drizzleState={drizzleState} />
+                                </Content>
+                            </div>
+                        )}
+                    </main>
 
-    componentWillUnmount() {
-        this.unsubscribe()
-    }
-
-    render() {
-        if (this.state.loading) return 'Loading Drizzle...'
-        return (
-            <div className="App">
-                <DIDRegistryContainer
-                    drizzle={this.props.drizzle}
-                    drizzleState={this.state.drizzleState}
-                />
-            </div>
-        )
-    }
-}
-
-export default App
+                    <Footer />
+                </div>
+            )
+        }}
+    </DrizzleContext.Consumer>
+)
