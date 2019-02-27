@@ -1,6 +1,10 @@
 [![banner](https://raw.githubusercontent.com/oceanprotocol/art/master/github/repo-banner%402x.png)](https://oceanprotocol.com)
 
-# keeper-contracts
+# keeper-contracts [experimental fork]
+
+``` sh
+git remote add keeper-contracts git@github.com:oceanprotocol/keeper-contracts
+```
 
 > 💧 Integration of TCRs, CPM and Ocean Tokens in Solidity
 > [oceanprotocol.com](https://oceanprotocol.com)
