@@ -5,6 +5,13 @@ import '../ConditionStoreLibrary.sol';
 
 contract EscrowReward is Reward {
 
+    event Fulfilled(
+        bytes32 indexed _agreementId,
+        address indexed _receiver,
+        bytes32 _conditionId,
+        uint256 _amount
+    );
+
     function initialize(
         address _owner,
         address _conditionStoreManagerAddress,
@@ -67,8 +74,29 @@ contract EscrowReward is Reward {
                 _releaseCondition
             )
         );
+        address lockConditionTypeRef;
+        ConditionStoreLibrary.ConditionState lockConditionState;
+        (lockConditionTypeRef,lockConditionState,,,,,) = conditionStoreManager
+            .getCondition(_lockCondition);
+
+        bytes32 generatedLockConditionId = keccak256(
+            abi.encodePacked(
+                _agreementId,
+                lockConditionTypeRef,
+                keccak256(
+                    abi.encodePacked(
+                        address(this),
+                        _amount
+                    )
+                )
+            )
+        );
         require(
-            conditionStoreManager.getConditionState(_lockCondition) ==
+            generatedLockConditionId == _lockCondition,
+            'LockCondition ID does not match'
+        );
+        require(
+            lockConditionState ==
             ConditionStoreLibrary.ConditionState.Fulfilled,
             'LockCondition needs to be Fulfilled'
         );
@@ -77,16 +105,29 @@ contract EscrowReward is Reward {
             'Not enough balance'
         );
 
-        ConditionStoreLibrary.ConditionState state =
-            conditionStoreManager.getConditionState(_releaseCondition);
+        ConditionStoreLibrary.ConditionState state = conditionStoreManager
+            .getConditionState(_releaseCondition);
 
+        address escrowReceiver = address(0x0);
         if (state == ConditionStoreLibrary.ConditionState.Fulfilled)
         {
+            escrowReceiver = _receiver;
             state = _transferAndFulfill(id, _receiver, _amount);
         } else if (state == ConditionStoreLibrary.ConditionState.Aborted)
         {
+            escrowReceiver = _sender;
             state = _transferAndFulfill(id, _sender, _amount);
+        } else
+        {
+            return conditionStoreManager.getConditionState(id);
         }
+
+        emit Fulfilled(
+            _agreementId,
+            escrowReceiver,
+            id,
+            _amount
+        );
 
         return state;
     }
