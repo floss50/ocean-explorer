@@ -30,7 +30,7 @@ class AgreementList extends DrizzleComponent {
     }
 
     handleChange = event => {
-        this.setState({ value: event.target.value })
+        this.setState({ agreementIdValue: event.target.value })
     }
 
     handleKeyDown = e => {

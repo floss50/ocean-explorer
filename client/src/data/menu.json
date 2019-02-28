@@ -1,14 +1,18 @@
 [
   {
-    "title": "Publish",
-    "link": "/publish"
+    "title": "DIDs",
+    "link": "/dids"
   },
   {
-    "title": "About",
-    "link": "/about"
+    "title": "Templates",
+    "link": "/templates"
   },
   {
-    "title": "Styleguide",
-    "link": "/styleguide"
+    "title": "Agreements",
+    "link": "/agreements"
+  },
+    {
+    "title": "Conditions",
+    "link": "/conditions"
   }
 ]

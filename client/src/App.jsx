@@ -1,9 +1,9 @@
 import React from 'react'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { DrizzleContext } from 'drizzle-react'
-import DrizzleApp from './DrizzleApp'
-import Content from './components/atoms/Content'
-import Header from './components/Header.jsx'
-import Footer from './components/Footer.jsx'
+import Routes from './Routes'
+import Header from './components/Header'
+import Footer from './components/Footer'
 import Spinner from './components/atoms/Spinner'
 
 import './styles/global.scss'
@@ -12,29 +12,26 @@ import styles from './App.module.scss'
 export default () => (
     <DrizzleContext.Consumer>
         {drizzleContext => {
-            const { drizzle, drizzleState, initialized } = drizzleContext
+            const { initialized } = drizzleContext
             return (
                 <div className={styles.app}>
+                    <Router>
+                        <>
+                            <Header />
 
-                    <Header />
+                            <main className={styles.main}>
+                                { !initialized ? (
+                                    <div className={styles.loader}>
+                                        <Spinner message="Connecting to Ocean..." />
+                                    </div>
+                                ) : (
+                                    <Routes />
+                                )}
+                            </main>
 
-                    <main className={styles.main}>
-                        { !initialized ? (
-                            <div className={styles.loader}>
-                                <Spinner message="Connecting to Ocean..." />
-                            </div>
-                        ) : (
-                            <div className={styles.home}>
-                                <Content>
-                                    <DrizzleApp
-                                        drizzle={drizzle}
-                                        drizzleState={drizzleState} />
-                                </Content>
-                            </div>
-                        )}
-                    </main>
-
-                    <Footer />
+                            <Footer />
+                        </>
+                    </Router>
                 </div>
             )
         }}
