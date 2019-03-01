@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import cx from 'classnames'
 import styles from './Button.module.scss'
 
-export default class Button extends PureComponent{
+export default class Button extends PureComponent {
     render() {
         let classes
         const {

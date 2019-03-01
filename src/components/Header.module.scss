@@ -9,7 +9,7 @@
 }
 
 .headerContent {
-    composes: wide from 'atoms/Content.module.scss';
+    composes: wide from './atoms/Content.module.scss';
     display: flex;
     align-items: center;
 }
