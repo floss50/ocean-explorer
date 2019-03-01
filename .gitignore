@@ -1,23 +1,23 @@
-build/
-.idea/
-node_modules/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
 .DS_Store
-installed_contracts/
-coverage*
-dist
-keeper_contracts.egg-info
-venv
-ganache-cli.log
-target/
-.python-version
-artifacts/*.development.json
-.eggs/
-zos.dev-*
-.zos.session
-.zos.lock
-zos.json
-wallets.json
-mythrilReport.md
-securifyReport.txt
-KeeperContracts.png
-slitherReport.txt
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

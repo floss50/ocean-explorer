@@ -1,7 +1,0 @@
-{
-    "parser": "babel-eslint",
-    "extends": ["oceanprotocol", "oceanprotocol/react"],
-    "env": {
-        "jest": true
-    }
-}
