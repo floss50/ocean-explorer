@@ -1,5 +1,6 @@
 import React from 'react'
 import Input from '../../components/atoms/Form/Input'
+import Button from '../../components/atoms/Button'
 import styles from './DIDRegistry.module.scss'
 import DrizzleComponent from '../../components/molecules/DrizzleComponent'
 import OceanContext from '../../context/Ocean'
@@ -7,30 +8,26 @@ import OceanContext from '../../context/Ocean'
 class DIDRegistryCreate extends DrizzleComponent {
     state = {
         stackId: null,
-        didValue: this.props.drizzle.web3.utils.sha3(Math.random().toString())
+        didValue: this.randomBytes32()
     }
 
     handleChange = event => {
         this.setState({ didValue: event.target.value })
     }
 
-    handleKeyDown = e => {
-        if (e.keyCode === 13) {
-            this.registerAttribute(e.target.value)
-        }
-    }
-
-    registerAttribute = did => {
+    registerAttribute = () => {
         const { drizzle, drizzleState } = this.props
+        const { didValue } = this.state
         const contract = drizzle.contracts.DIDRegistry
 
         // let drizzle know we want to call the `set` method with `value`
         const stackId = contract.methods['registerAttribute'].cacheSend(
-            did,
-            did,
+            didValue,
+            this.randomBytes32(),
             'some value',
             { from: drizzleState.accounts[0] }
         )
+        this.state.didValue = this.randomBytes32()
         this.setState({
             stackId
         })
@@ -46,6 +43,9 @@ class DIDRegistryCreate extends DrizzleComponent {
                     value={this.state.didValue}
                     onChange={this.handleChange}
                     onKeyDown={this.handleKeyDown} />
+                <Button onClick={this.registerAttribute}>
+                    Register DID
+                </Button>
                 <div>{this.getTxStatus()}</div>
             </div>
         )

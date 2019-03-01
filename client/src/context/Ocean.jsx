@@ -13,7 +13,12 @@ const OceanContext = React.createContext({
         active: null,
         amount: null
     },
-    addressBook: {}
+    template: {
+        active: null,
+        amount: null
+    },
+    addressBook: {},
+
 })
 
 export default OceanContext

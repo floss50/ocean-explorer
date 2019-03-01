@@ -27,11 +27,11 @@ class DIDRegistry extends Component {
                             title={`${meta.did.title} (${this.context.did.amount})`}
                             className={styles.home}
                         >
-                            <DIDRegistryList
+                            <DIDRegistryCreate
                                 drizzle={drizzle}
                                 drizzleState={drizzleState}
                             />
-                            <DIDRegistryCreate
+                            <DIDRegistryList
                                 drizzle={drizzle}
                                 drizzleState={drizzleState}
                             />

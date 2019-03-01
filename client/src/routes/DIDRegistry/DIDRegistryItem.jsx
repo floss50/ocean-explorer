@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
+import DrizzleComponent from '../../components/molecules/DrizzleComponent'
 import AgreementItem from '../Agreements/AgreementItem'
 import styles from './DIDRegistry.module.scss'
-import OceanContext from '../../context/Ocean'
 
-class DIDRegistryItem extends Component {
+class DIDRegistryItem extends DrizzleComponent {
     state = {
         stackId: null,
         getAgreementIdsForDIDKey: null,
@@ -62,9 +62,9 @@ class DIDRegistryItem extends Component {
             return (
                 <div className={styles.card} onClick={this.props.onClick}>
                     <pre>ID: {this.props.did}</pre>
-                    <pre>DID Owner: {this.context.addressBook[owner]}</pre>
+                    <pre>DID Owner: {this.mapAddress(owner)}</pre>
                     <pre>Last checksum: {lastChecksum}</pre>
-                    <pre>Updated: {blockNumberUpdated} by {this.context.addressBook[lastUpdatedBy]}</pre>
+                    <pre>Updated: {blockNumberUpdated} by {this.mapAddress(lastUpdatedBy)}</pre>
                     <pre
                         className={styles.collapsable}
                         onClick={this.toggleAgreements}>
@@ -88,7 +88,5 @@ class DIDRegistryItem extends Component {
         return null
     }
 }
-
-DIDRegistryItem.contextType = OceanContext
 
 export default DIDRegistryItem

@@ -1,8 +1,13 @@
 import React from 'react'
+import OceanContext from '../../context/Ocean'
 
 class DrizzleComponent extends React.Component {
     randomBytes32 = () => this.props.drizzle.web3.utils.sha3(Math.random().toString())
     hash = value => this.props.drizzle.web3.utils.sha3(value)
+
+    mapAddress = (address) => {
+        return this.context.addressBook[address] ? this.context.addressBook[address] : address
+    }
 
     getTxStatus = () => {
         // get the transaction states from the drizzle state
@@ -18,5 +23,7 @@ class DrizzleComponent extends React.Component {
         return `Transaction status: ${transactions[txHash].status}`
     }
 }
+
+DrizzleComponent.contextType = OceanContext
 
 export default DrizzleComponent

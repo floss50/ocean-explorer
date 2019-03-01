@@ -38,12 +38,10 @@ class HashLockConditionItem extends DrizzleComponent {
                         type="text"
                         value={this.state.secret}
                         onChange={this.handleChange} />
-                    <div className={styles.txStatus}>{this.getTxStatus()}</div>
-                </div>
-                <div className={styles.itemForm}>
                     <Button onClick={this.fulfillCondition}>
                         Fulfill
                     </Button>
+                    <div className={styles.txStatus}>{this.getTxStatus()}</div>
                 </div>
             </div>
         )

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import styles from './Agreement.module.scss'
+import React from 'react'
+import DrizzleComponent from '../../components/molecules/DrizzleComponent'
 import ConditionItem from '../Conditions/ConditionItem'
-import OceanContext from '../../context/Ocean'
+import styles from './Agreement.module.scss'
 
-class AgreementItem extends Component {
+class AgreementItem extends DrizzleComponent {
     state = {
         stackId: null,
         getAgreementKey: null,
@@ -54,10 +54,10 @@ class AgreementItem extends Component {
                         DID: {did}
                     </pre>
                     <pre>
-                        DID Owner: {this.context.addressBook[didOwner]}
+                        DID Owner: {this.mapAddress(didOwner)}
                     </pre>
                     <pre>
-                        Template Id: {this.context.addressBook[templateId]}
+                        Template Id: {this.mapAddress(templateId)}
                     </pre>
                     <pre
                         className={styles.collapsable}
@@ -83,7 +83,5 @@ class AgreementItem extends Component {
         return null
     }
 }
-
-AgreementItem.contextType = OceanContext
 
 export default AgreementItem

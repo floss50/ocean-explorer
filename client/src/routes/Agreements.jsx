@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { DrizzleContext } from 'drizzle-react'
 import Route from '../components/templates/Route'
+import OceanContext from '../context/Ocean'
 import AgreementCreate from './Agreements/AgreementCreate.jsx'
 import AgreementList from './Agreements/AgreementList.jsx'
 import meta from '../data/meta.json'
 import '../App.css'
 import styles from '../App.module.scss'
-import OceanContext from '../context/Ocean'
 
 class Agreements extends Component {
     render() {

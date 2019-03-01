@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React from 'react'
 import classnames from 'classnames'
+import DrizzleComponent from '../../components/molecules/DrizzleComponent'
 import HashLockConditionItem from './HashLockConditionItem'
 import styles from './Condition.module.scss'
-import OceanContext from '../../context/Ocean'
 
-class ConditionItem extends Component {
+class ConditionItem extends DrizzleComponent {
     state = {
         stackId: null,
         getConditionKey: null
@@ -58,15 +58,17 @@ class ConditionItem extends Component {
                 case '3':
                     classNameCondition = styles.cardAborted
                     break
+                default:
+                    classNameCondition = null
             }
 
             return (
                 <div className={classnames(styles.card, classNameCondition)}>
                     <pre>ID: {this.props.conditionId}</pre>
-                    <pre>Type: {this.context.addressBook[typeRef]}</pre>
+                    <pre>Type: {this.mapAddress(typeRef)}</pre>
                     <pre>State: {state}</pre>
                     <pre>TimeLock: {timeLock} | TimeOut: {timeOut}</pre>
-                    <pre>Created: {blockNumber} | Updated: {blockNumberUpdated} by {this.context.addressBook[lastUpdatedBy]}</pre>
+                    <pre>Created: {blockNumber} | Updated: {blockNumberUpdated} by {this.mapAddress(lastUpdatedBy)}</pre>
                     {
                         typeRef === HashLockCondition.address &&
                         state === '1' && (
@@ -79,7 +81,5 @@ class ConditionItem extends Component {
         return null
     }
 }
-
-ConditionItem.contextType = OceanContext
 
 export default ConditionItem
