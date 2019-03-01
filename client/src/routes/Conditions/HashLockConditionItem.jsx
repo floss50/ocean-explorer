@@ -7,7 +7,7 @@ import styles from './Condition.module.scss'
 class HashLockConditionItem extends DrizzleComponent {
     state = {
         stackId: null,
-        secret: 420
+        secret: '420'
     }
 
     handleChange = event => {
@@ -21,7 +21,7 @@ class HashLockConditionItem extends DrizzleComponent {
         // let drizzle know we want to call the `set` method with `value`
         const stackId = HashLockCondition.methods['fulfill'].cacheSend(
             this.props.agreementId,
-            this.state.secret
+            this.hash(this.state.secret)
         )
         this.setState({
             stackId
@@ -30,7 +30,7 @@ class HashLockConditionItem extends DrizzleComponent {
 
     render() {
         return (
-            <div>
+            <div className={styles.fulfillContainer}>
                 <div className={styles.itemForm}>
                     <Input
                         label="Secret"

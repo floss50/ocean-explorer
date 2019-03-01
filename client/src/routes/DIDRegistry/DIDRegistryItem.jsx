@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import AgreementItem from '../Agreements/AgreementItem'
 import styles from './DIDRegistry.module.scss'
+import OceanContext from '../../context/Ocean'
 
 class DIDRegistryItem extends Component {
     state = {
         stackId: null,
         getAgreementIdsForDIDKey: null,
-        getBlockNumberUpdatedKey: null,
+        getDIDRegisterKey: null,
         hiddenAgreements: true
     }
 
@@ -20,9 +21,9 @@ class DIDRegistryItem extends Component {
         if (!did) { return null }
         const didRegistry = drizzle.contracts.DIDRegistry
 
-        const getBlockNumberUpdatedKey = didRegistry.methods['getBlockNumberUpdated'].cacheCall(did)
+        const getDIDRegisterKey = didRegistry.methods['getDIDRegister'].cacheCall(did)
         this.setState({
-            getBlockNumberUpdatedKey
+            getDIDRegisterKey
         })
     }
 
@@ -42,38 +43,52 @@ class DIDRegistryItem extends Component {
     render() {
         const { DIDRegistry, AgreementStoreManager } = this.props.drizzleState.contracts
         const {
-            getBlockNumberUpdatedKey,
+            getDIDRegisterKey,
             getAgreementIdsForDIDKey,
             hiddenAgreements
         } = this.state
 
-        const blockNumberUpdated = DIDRegistry.getBlockNumberUpdated[getBlockNumberUpdatedKey]
+        const didRegister = DIDRegistry.getDIDRegister[getDIDRegisterKey]
         const agreementIdsForDID = AgreementStoreManager.getAgreementIdsForDID[getAgreementIdsForDIDKey]
 
-        return (
-            <div className={styles.card} onClick={this.props.onClick}>
-                <pre>ID: {this.props.did}</pre>
-                <pre>Updated: {blockNumberUpdated && blockNumberUpdated.value} by </pre>
-                <pre
-                    className={styles.collapsable}
-                    onClick={this.toggleAgreements}>
-                    + Agreements ({agreementIdsForDID && agreementIdsForDID.value && agreementIdsForDID.value.length })
-                </pre>
-                {
-                    !hiddenAgreements &&
-                    agreementIdsForDID && agreementIdsForDID.value &&
-                    agreementIdsForDID.value.map(agreementId => (
-                        <AgreementItem
-                            key={agreementId}
-                            agreementId={agreementId}
-                            drizzle={this.props.drizzle}
-                            drizzleState={this.props.drizzleState}
-                        />
-                    ))
-                }
-            </div>
-        )
+        if (didRegister) {
+            const {
+                owner,
+                lastChecksum,
+                lastUpdatedBy,
+                blockNumberUpdated
+            } = didRegister.value
+
+            return (
+                <div className={styles.card} onClick={this.props.onClick}>
+                    <pre>ID: {this.props.did}</pre>
+                    <pre>DID Owner: {this.context.addressBook[owner]}</pre>
+                    <pre>Last checksum: {lastChecksum}</pre>
+                    <pre>Updated: {blockNumberUpdated} by {this.context.addressBook[lastUpdatedBy]}</pre>
+                    <pre
+                        className={styles.collapsable}
+                        onClick={this.toggleAgreements}>
+                    + Agreements ({agreementIdsForDID && agreementIdsForDID.value && agreementIdsForDID.value.length})
+                    </pre>
+                    {
+                        !hiddenAgreements &&
+                        agreementIdsForDID && agreementIdsForDID.value &&
+                        agreementIdsForDID.value.map(agreementId => (
+                            <AgreementItem
+                                key={agreementId}
+                                agreementId={agreementId}
+                                drizzle={this.props.drizzle}
+                                drizzleState={this.props.drizzleState}
+                            />
+                        ))
+                    }
+                </div>
+            )
+        }
+        return null
     }
 }
+
+DIDRegistryItem.contextType = OceanContext
 
 export default DIDRegistryItem

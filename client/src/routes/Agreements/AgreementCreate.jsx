@@ -23,7 +23,7 @@ class AgreementCreate extends DrizzleComponent {
 
         const conditionIdKey = HashLockCondition.methods['generateId'].cacheCall(
             agreementId,
-            this.hash("420")
+            this.hash(this.hash('420'))
         )
         this.setState({ conditionIdKey })
     }

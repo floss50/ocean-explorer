@@ -21,6 +21,7 @@ class DIDRegistry extends Component {
                     this.context.addressBook[AgreementStoreManager.address] = 'AgreementStoreManager'
                     this.context.addressBook[HashLockCondition.address] = 'HashLockCondition'
                     this.context.addressBook[drizzleState.accounts[0]] = 'accounts[0]'
+                    console.log(this.context.addressBook)
                     return (
                         <Route
                             title={`${meta.did.title} (${this.context.did.amount})`}

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import HashLockConditionItem from './HashLockConditionItem'
 import styles from './Condition.module.scss'
+import OceanContext from '../../context/Ocean'
 
 class ConditionItem extends Component {
     state = {
@@ -46,15 +47,29 @@ class ConditionItem extends Component {
                 blockNumberUpdated
             } = condition.value
 
+            let classNameCondition
+            switch (state) {
+                case '1':
+                    classNameCondition = styles.cardUnfulfilled
+                    break
+                case '2':
+                    classNameCondition = styles.cardFulfilled
+                    break
+                case '3':
+                    classNameCondition = styles.cardAborted
+                    break
+            }
+
             return (
-                <div className={classnames(styles.card, styles.cardUnfulfilled)}>
+                <div className={classnames(styles.card, classNameCondition)}>
                     <pre>ID: {this.props.conditionId}</pre>
-                    <pre>Type: {typeRef}</pre>
+                    <pre>Type: {this.context.addressBook[typeRef]}</pre>
                     <pre>State: {state}</pre>
                     <pre>TimeLock: {timeLock} | TimeOut: {timeOut}</pre>
-                    <pre>Created: {blockNumber} | Updated: {blockNumberUpdated} by {lastUpdatedBy}</pre>
+                    <pre>Created: {blockNumber} | Updated: {blockNumberUpdated} by {this.context.addressBook[lastUpdatedBy]}</pre>
                     {
-                        (typeRef === HashLockCondition.address) && (
+                        typeRef === HashLockCondition.address &&
+                        state === '1' && (
                             <HashLockConditionItem {...this.props} />
                         )
                     }
@@ -64,5 +79,7 @@ class ConditionItem extends Component {
         return null
     }
 }
+
+ConditionItem.contextType = OceanContext
 
 export default ConditionItem

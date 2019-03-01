@@ -29,7 +29,13 @@ const options = {
         AccessSecretStoreCondition,
         LockRewardCondition,
         EscrowReward
-    ]
+    ],
+    events: {
+        ConditionStoreManager: [
+            'ConditionCreated',
+            'ConditionUpdated'
+        ]
+    }
 }
 
 // setup the drizzle store and drizzle
