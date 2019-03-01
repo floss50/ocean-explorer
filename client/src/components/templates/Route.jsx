@@ -23,7 +23,6 @@ const Route = ({
                     <h1>{title}</h1>
                     {description && <p>{description}</p>}
                 </header>
-
                 {children}
             </article>
         </Content>

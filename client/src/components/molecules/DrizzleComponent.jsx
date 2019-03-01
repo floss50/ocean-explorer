@@ -1,6 +1,9 @@
 import React from 'react'
 
 class DrizzleComponent extends React.Component {
+    randomBytes32 = () => this.props.drizzle.web3.utils.sha3(Math.random().toString())
+    hash = value => this.props.drizzle.web3.utils.sha3(value)
+
     getTxStatus = () => {
         // get the transaction states from the drizzle state
         const { transactions, transactionStack } = this.props.drizzleState

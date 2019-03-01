@@ -109,7 +109,8 @@ contract DIDRegistry is Ownable {
      * @return the address of the DID owner.
      */
     function getDIDOwner(bytes32 _did)
-        public view
+        public
+        view
         returns(address didOwner)
     {
         return didRegisterList.didRegisters[_did].owner;
@@ -130,7 +131,8 @@ contract DIDRegistry is Ownable {
      * @return the length of the DID registry.
      */
     function getDIDRegisterIds()
-        public view
+        public
+        view
         returns (bytes32[] memory)
     {
         return didRegisterList.didRegisterIds;

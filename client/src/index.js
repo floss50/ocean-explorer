@@ -11,6 +11,11 @@ import AgreementStoreManager from './contracts/AgreementStoreManager.json'
 import ConditionStoreManager from './contracts/ConditionStoreManager.json'
 import TemplateStoreManager from './contracts/TemplateStoreManager.json'
 import DIDRegistry from './contracts/DIDRegistry.json'
+import HashLockCondition from './contracts/HashLockCondition.json'
+import SignCondition from './contracts/SignCondition.json'
+import AccessSecretStoreCondition from './contracts/AccessSecretStoreCondition.json'
+import LockRewardCondition from './contracts/LockRewardCondition.json'
+import EscrowReward from './contracts/EscrowReward.json'
 
 // let drizzle know what contracts we want
 const options = {
@@ -18,7 +23,12 @@ const options = {
         DIDRegistry,
         AgreementStoreManager,
         ConditionStoreManager,
-        TemplateStoreManager
+        TemplateStoreManager,
+        HashLockCondition,
+        SignCondition,
+        AccessSecretStoreCondition,
+        LockRewardCondition,
+        EscrowReward
     ]
 }
 

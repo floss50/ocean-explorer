@@ -5,8 +5,9 @@ import ConditionList from './Conditions/ConditionList.jsx'
 import meta from '../data/meta.json'
 import '../App.css'
 import styles from '../App.module.scss'
+import OceanContext from '../context/Ocean'
 
-class Home extends Component {
+class Conditions extends Component {
     render() {
         return (
             <DrizzleContext.Consumer>
@@ -14,8 +15,7 @@ class Home extends Component {
                     const { drizzle, drizzleState } = drizzleContext
                     return (
                         <Route
-                            title={meta.title}
-                            description={meta.description}
+                            title={`${meta.conditions.title} (${this.context.condition.amount})`}
                             className={styles.home}
                         >
                             <ConditionList
@@ -30,4 +30,6 @@ class Home extends Component {
     }
 }
 
-export default Home
+Conditions.contextType = OceanContext
+
+export default Conditions

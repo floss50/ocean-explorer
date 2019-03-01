@@ -1,22 +1,3 @@
 @import '../../styles/variables';
+@import '../../App.module';
 
-.itemForm {
-    margin-top: $spacer / 2;
-    padding-left: $spacer / 2;
-
-    button {
-        margin-top: -($spacer * 2);
-    }
-}
-
-.wrapper {
-    border: 1px solid $brand-grey-lighter;
-    padding: 2em;
-    margin: 1em;
-}
-
-.error {
-    font-size: $font-size-small;
-    color: $red;
-    margin-left: $spacer / 4;
-}

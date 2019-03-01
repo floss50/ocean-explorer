@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import classnames from 'classnames'
+import HashLockConditionItem from './HashLockConditionItem'
+import styles from './Condition.module.scss'
 
 class ConditionItem extends Component {
     state = {
@@ -24,21 +27,41 @@ class ConditionItem extends Component {
     }
 
     render() {
-        // get the contract state from drizzleState
-        const { ConditionStoreManager } = this.props.drizzleState.contracts
-        // using the saved `dataKey`, get the variable we're interested in
-        const condition = ConditionStoreManager.getCondition[this.state.getConditionKey]
+        const {
+            ConditionStoreManager
+        } = this.props.drizzleState.contracts
+        const {
+            HashLockCondition
+        } = this.props.drizzle.contracts
 
-        return (
-            <div>
-                <div>{this.props.conditionId}</div>
-                <div>typeRef: {condition && condition.value.typeRef}</div>
-                <div>state: {condition && condition.value.state}</div>
-                <div>timeLock: {condition && condition.value.timeLock}</div>
-                <div>timeOut: {condition && condition.value.timeOut}</div>
-                <div>blockNumber: {condition && condition.value.blockNumber}</div>
-            </div>
-        )
+        const condition = ConditionStoreManager.getCondition[this.state.getConditionKey]
+        if (condition) {
+            const {
+                typeRef,
+                state,
+                timeLock,
+                timeOut,
+                blockNumber,
+                lastUpdatedBy,
+                blockNumberUpdated
+            } = condition.value
+
+            return (
+                <div className={classnames(styles.card, styles.cardUnfulfilled)}>
+                    <pre>ID: {this.props.conditionId}</pre>
+                    <pre>Type: {typeRef}</pre>
+                    <pre>State: {state}</pre>
+                    <pre>TimeLock: {timeLock} | TimeOut: {timeOut}</pre>
+                    <pre>Created: {blockNumber} | Updated: {blockNumberUpdated} by {lastUpdatedBy}</pre>
+                    {
+                        (typeRef === HashLockCondition.address) && (
+                            <HashLockConditionItem {...this.props} />
+                        )
+                    }
+                </div>
+            )
+        }
+        return null
     }
 }
 

@@ -25,7 +25,7 @@ process.chdir('../')
 const walletPath = './wallets.json'
 // load NETWORK from environment
 const NETWORK = process.env.NETWORK || 'development'
-const TEMPLATE_OWNER = process.env.TEMPLATE_ID || null
+const TEMPLATE_OWNER = process.env.TEMPLATE_OWNER || null
 // load current version from package
 const VERSION = `v${pkg.version}`
 const timeout = 36000

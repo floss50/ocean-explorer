@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { DrizzleContext } from 'drizzle-react'
 import Route from '../components/templates/Route'
+import AgreementCreate from './Agreements/AgreementCreate.jsx'
 import AgreementList from './Agreements/AgreementList.jsx'
 import meta from '../data/meta.json'
 import '../App.css'
 import styles from '../App.module.scss'
+import OceanContext from '../context/Ocean'
 
-class Home extends Component {
+class Agreements extends Component {
     render() {
         return (
             <DrizzleContext.Consumer>
@@ -14,10 +16,13 @@ class Home extends Component {
                     const { drizzle, drizzleState } = drizzleContext
                     return (
                         <Route
-                            title={meta.title}
-                            description={meta.description}
+                            title={`${meta.agreements.title} (${this.context.agreement.amount})`}
                             className={styles.home}
                         >
+                            <AgreementCreate
+                                drizzle={drizzle}
+                                drizzleState={drizzleState}
+                            />
                             <AgreementList
                                 drizzle={drizzle}
                                 drizzleState={drizzleState}
@@ -30,4 +35,6 @@ class Home extends Component {
     }
 }
 
-export default Home
+Agreements.contextType = OceanContext
+
+export default Agreements

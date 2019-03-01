@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
+import styles from './Agreement.module.scss'
+import ConditionItem from '../Conditions/ConditionItem'
 
 class AgreementItem extends Component {
     state = {
         stackId: null,
-        getAgreementKey: null
+        getAgreementKey: null,
+        hiddenConditions: true
     }
 
     componentDidMount() {
@@ -23,21 +26,53 @@ class AgreementItem extends Component {
         })
     }
 
-    render() {
-        // get the contract state from drizzleState
-        const { AgreementStoreManager } = this.props.drizzleState.contracts
-        // using the saved `dataKey`, get the variable we're interested in
-        const agreement = AgreementStoreManager.getAgreement[this.state.getAgreementKey]
+    toggleConditions = e => {
+        this.setState({ hiddenConditions: !this.state.hiddenConditions })
+    }
 
-        return (
-            <div>
-                <div>{this.props.agreementId}</div>
-                <div>did: {agreement && agreement.value.did}</div>
-                <div>didOwner: {agreement && agreement.value.didOwner}</div>
-                <div>templateId: {agreement && agreement.value.templateId}</div>
-                <div>conditionIds: {agreement && agreement.value.conditionIds}</div>
-            </div>
-        )
+    render() {
+        const { AgreementStoreManager } = this.props.drizzleState.contracts
+        const {
+            getAgreementKey,
+            hiddenConditions
+        } = this.state
+        const agreement = AgreementStoreManager.getAgreement[getAgreementKey]
+
+        if (agreement) {
+            return (
+                <div className={styles.card}>
+                    <pre>ID: {this.props.agreementId}</pre>
+                    <pre>
+                    DID: {agreement && agreement.value.did}
+                    </pre>
+                    <pre>
+                    DID Owner: {agreement && agreement.value.didOwner}
+                    </pre>
+                    <pre>
+                    Template Id: {agreement && agreement.value.templateId}
+                    </pre>
+                    <pre
+                        className={styles.collapsable}
+                        onClick={this.toggleConditions}>
+                    + Conditions ({agreement && agreement.value.conditionIds && agreement.value.conditionIds.length})
+                    </pre>
+                    {
+                        !hiddenConditions &&
+                        agreement && agreement.value.conditionIds &&
+                        agreement.value.conditionIds.map(conditionId => (
+                            <ConditionItem
+                                key={conditionId}
+                                agreementId={this.props.agreementId}
+                                conditionId={conditionId}
+                                drizzle={this.props.drizzle}
+                                drizzleState={this.props.drizzleState}
+                            />
+                        ))
+                    }
+                </div>
+            )
+        }
+        return null
     }
 }
 

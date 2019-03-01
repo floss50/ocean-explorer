@@ -1,15 +1,15 @@
 import React from 'react'
-import Input from '../../components/atoms/Form/Input'
 import DIDRegistryItem from './DIDRegistryItem'
 import styles from './DIDRegistry.module.scss'
 import DrizzleComponent from '../../components/molecules/DrizzleComponent'
+import OceanContext from '../../context/Ocean'
 
 class DIDRegistryList extends DrizzleComponent {
     state = {
         stackId: null,
         getDIDRegisterIdsKey: null,
         getDIDRegistrySizeKey: null,
-        didValue: '0x0000000000000000000000000000000000000000000000000000000000000001'
+        getAgreementIdsForDIDKey: null
     }
 
     componentDidMount() {
@@ -29,50 +29,18 @@ class DIDRegistryList extends DrizzleComponent {
         })
     }
 
-    handleChange = event => {
-        this.setState({ didValue: event.target.value })
-    }
-
-    handleKeyDown = e => {
-        if (e.keyCode === 13) {
-            this.registerAttribute(e.target.value)
-        }
-    }
-
-    registerAttribute = did => {
-        const { drizzle, drizzleState } = this.props
-        const contract = drizzle.contracts.DIDRegistry
-
-        // let drizzle know we want to call the `set` method with `value`
-        const stackId = contract.methods['registerAttribute'].cacheSend(
-            did,
-            did,
-            'some value',
-            { from: drizzleState.accounts[0] }
-        )
-        this.setState({
-            stackId
-        })
+    handleClick = did => {
+        this.context.did.active = did
     }
 
     render() {
         const { DIDRegistry } = this.props.drizzleState.contracts
         const didRegisterIds = DIDRegistry.getDIDRegisterIds[this.state.getDIDRegisterIdsKey]
         const didRegistrySize = DIDRegistry.getDIDRegistrySize[this.state.getDIDRegistrySizeKey]
+        this.context.did.amount = didRegistrySize && didRegistrySize.value
 
         return (
             <div className={styles.wrapper}>
-                <div className={styles.itemForm}>
-                    <Input
-                        label="DID"
-                        name="did"
-                        type="text"
-                        value={this.state.didValue}
-                        onChange={this.handleChange}
-                        onKeyDown={this.handleKeyDown} />
-                    <div>{this.getTxStatus()}</div>
-                </div>
-                <p>DID Registry Size: {didRegistrySize && didRegistrySize.value}</p>
                 {
                     didRegisterIds && didRegisterIds.value && didRegisterIds.value.map(did => (
                         <DIDRegistryItem
@@ -80,6 +48,7 @@ class DIDRegistryList extends DrizzleComponent {
                             did={did}
                             drizzle={this.props.drizzle}
                             drizzleState={this.props.drizzleState}
+                            onClick={() => this.handleClick(did)}
                         />
                     ))
                 }
@@ -87,5 +56,7 @@ class DIDRegistryList extends DrizzleComponent {
         )
     }
 }
+
+DIDRegistryList.contextType = OceanContext
 
 export default DIDRegistryList

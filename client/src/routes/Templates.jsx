@@ -14,8 +14,7 @@ class Home extends Component {
                     const { drizzle, drizzleState } = drizzleContext
                     return (
                         <Route
-                            title={meta.title}
-                            description={meta.description}
+                            title={meta.templates.title}
                             className={styles.home}
                         >
                             <TemplateList

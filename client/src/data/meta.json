@@ -1,7 +1,19 @@
 {
-  "title": "Commons",
+  "title": "Ocean Explorer",
   "description": "A marketplace to find and publish open data sets in the Ocean Network.",
   "company": "Ocean Protocol Foundation Ltd.",
+  "did": {
+    "title": "DID Registry"
+  },
+  "agreements": {
+    "title": "Agreements"
+  },
+  "conditions": {
+    "title": "Conditions"
+  },
+  "templates": {
+    "title": "Templates"
+  },
   "social": [
     {
       "title": "Site",
