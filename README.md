@@ -3,6 +3,8 @@
 ```bash
 npm i
 cd src/
+
+// compatible with release/v0.8 branch
 ln -s <path-to-../keeper-contracts/build/contracts> contracts
 cd ..
 ```
