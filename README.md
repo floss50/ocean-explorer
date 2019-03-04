@@ -13,6 +13,7 @@ cd ..
 Make sure you have deployed the keeper-contracts to `ganache` 
 
 See [keeper-contracts](https://github.com/oceanprotocol/keeper-contracts) for instructions
+Make sure you have control with over the multisig wallet with `accounts[0]`
 
 Point metamask to `localhost:8545`
 
